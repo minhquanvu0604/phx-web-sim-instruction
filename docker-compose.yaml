@@ -1,0 +1,46 @@
+services:
+  phx_sim:
+    image: minhquanvu0604/phx-web-uav-sim:${IMG_VERSION:-latest}
+    container_name: phx-sim-${DRONE_ID:-d1}-${BOX_ID:-b1}
+    network_mode: "host"
+    ipc: "host"
+    pid: "host"
+    mem_limit: 16g
+    memswap_limit: 24g
+
+    # Environment passed into the container
+    environment:
+      # --- Running parameters ---
+      DRONE_ID: "${DRONE_ID:-d1}"
+      BOX_ID: "${BOX_ID:-b1}"
+
+      # --- DDS settings ---
+      RMW_IMPLEMENTATION: "rmw_fastrtps_cpp"
+      # Optional: force noninteractive locale things
+      DEBIAN_FRONTEND: "noninteractive"
+      # FASTRTPS_DEFAULT_PROFILES_FILE: "/fastdds_profile.xml"
+      FASTRTPS_DEFAULT_PROFILES_FILE: "/fastdds_udp_only.xml"
+
+      # --- ROS 2 settings ---
+      # Match your host ROS_DOMAIN_ID if you want interop
+      ROS_DOMAIN_ID: "2"
+      
+      # --- PX4 Standalone settings ---
+      PX4_GZ_STANDALONE: "1"
+      # GAZEBO TRANSPORT SETTINGS (Must match Host)
+      GZ_IP: "127.0.0.1"
+      GZ_PARTITION: "px4_standalone"
+
+    # If your image’s CMD already drops you into a sourced shell, you can omit this.
+    # Otherwise, explicitly start your sim stack here:
+    # command: >
+    #   bash -lc "ros2 launch box_manager box_manager_sim.launch.py"
+
+    volumes:
+    #  - ./temp_src/ros2_telemetry:/ros2_ws/src/ros2_telemetry/
+    #  - ./fastdds_profile.xml:/fastdds_profile.xml:ro
+     - ./fastdds_udp_only.xml:/fastdds_udp_only.xml:ro
+
+
+    # Restart policy (optional)
+    restart: "unless-stopped"
