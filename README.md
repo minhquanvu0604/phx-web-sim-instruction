@@ -47,6 +47,13 @@ export GZ_PARTITION=px4_standalone # Optional: Set a specific partition name to 
 python3 simulation-gazebo.py
 ```
 
+Change the IP in [fastdds_udp_only.xml](fastdds_udp_only.xml) to your VPN subnet 
+```xml
+<interfaceWhiteList>
+    <address>10.22.0.12</address> <!-- Your VPN subnet -->
+</interfaceWhiteList>
+```
+
 Run the container. The whole stack should execute immediately upon running the Docker container.
 ```bash
 # Usage: ./start_container.sh [drone_id] [box_id] [img_version]
